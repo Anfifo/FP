@@ -1,75 +1,82 @@
-#Método de Dhont
+#=========================#
+#         tg007           #
+#   Andre Fonseca 84698   # 
+# Catarina Custodio 84705 #
+#=========================#
+
+#======================Constantes do Programa================================#
+#Deputados por Circulo Eleitoral
+deputados = (16, 3, 19, 3, 4, 9, 3, 9, 4, 10, 47 ,2 ,39 ,9 ,18 , 6, 5, 9,\
+                 5, 6, 2, 2)     
+#Partidos
+PDR = "PDR\tPartido Democratico Republicano"
+PCP = "PCP-PEV\tCDU - Coligacao Democratica Unitaria"
+PPD = "PPD/PSD-CDS/PP\tPortugal a Frente"
+MPT = "MPT\tPartido da Terra"
+L = "L/TDA\tLIVRE/Tempo de Avancar"
+PAN = "PAN\tPessoas-Animais-Natureza"
+PTP = "PTP-MAS\tAgir"
+JPP = "JPP\tJuntos pelo Povo"
+PNR = "PNR\tPartido Nacional Renovador"
+PPM = "PPM\tPartido Popular Monarquico"
+NC = "NC\tNos, Cidadaos!"
+PCTP = "PCTP/MRPP\tPartido Comunista dos Trabalhadores Portugueses"
+PS = "PS\tPartido Socialista"
+BE = "B.E.\tBloco de Esquerda"
+PURP = "PURP\tPartido Unido dos Reformados e Pensionistas"
+#==============================================================================#
+
+
+#============================== FUNCOES========================================#
+#Funcao Mandatos
 def mandatos(nr_mandatos, nr_votos):
     '''a funcao mandatos tem 2 parametros, o primeiro, nr_mandatos, que
     corresponde ao numero de mandatos a atribuir e o segundo, nr_votos, que 
     corresponde aos votos nos partidos pelos quais os mandatos serao
     atribuidos'''
-    s=list(nr_votos)          
-    l_mand=[0]*len(s)                #lista de mandatos 
-    l_inter=[0]*len(s)               #lista iter para 
-                                     #aplicar a divisao do metodo dhont
-    for x in range(1, nr_mandatos+1):
-        i=s.index(max(s))            #posicao max ao qual se atribui 1 mandato
+    l_votos=list(nr_votos)              
+    l_mand=[0]*len(l_votos)                  #lista de mandatos atribuidos
+                                            
+    for x in range(nr_mandatos):
+        i=l_votos.index(max(l_votos)) #posicao a qual se atribui o mandato
         
-        n=s[:]                       #segunda lista para se calcular no caso
-        n[i]=0                       #em que haja 2 numeros de votos iguais
-        b= n.index(max(n))           
-        if s.count(max(s)) >1 and l_mand[b] < l_mand[i]:      
-            i=b
-        
-        l_mand[i]=l_mand[i]+1           
-        if l_inter[i]==0:            #inter para aplicar o metodo de dhont
-            l_inter[i]=2               
-        else:                        
-            l_inter[i]=l_inter[i]+1  #aumenta-se o inter, para o metodo de dhont   
-        s[i]=nr_votos[i]/l_inter[i]     
-    return tuple (l_mand)                       
+        if l_votos.count(max(l_votos))>1:    #se existir mais de um maximo
+            for j in range (len(l_votos)):   #atribuimos ao com menos votos
+                if l_votos[j] == l_votos[i] and nr_votos[j]<nr_votos[i]: 
+                    i=j
+    
+        l_mand[i]=l_mand[i]+1                #mandato atribuido, divide-se   
+        l_votos[i]=nr_votos[i]/(l_mand[i]+1) #os votos para o metodo de dhont
+    return tuple (l_mand)
 
 
-
+#Funcao Assembleia
 def assembleia(votacoes):
     '''recebe um tuplo de tuplos correspondente aos votos de cada circulo
     eleitoral, pega no numero de deputados por circulo eleitoral e devolve
     um tuplo com os mandatos atribuidos a cada candidatura'''
-    deputados = (16, 3, 19, 3, 4, 9, 3, 9, 4, 10, 47 ,2 ,39 ,9 ,18 , 6, 5, 9,\
-                 5, 6, 2, 2)
+    CE = [0,]*22                              #lista dos 22 circulos eleitorais
+    partidos = [0,]*15                        #lista dos 15 partidos candidatos
     
-    CE=[0,]*22                       #lista dos 22 circulos eleitorais
-    l=[0,]*15                        #lista dos 15 partidos candidatos
     for i in range(22):
-        CE = mandatos(deputados[i],votacoes[i])
-        for k in range(15):           #soma e calculo dos mandatos
-            l[k]=CE[k]+l[k]           #de todos os circulos eleitorais
+        CE = mandatos (deputados[i],votacoes[i])
+        for k in range(15):                 #soma e calculo dos mandatos
+            partidos[k]=CE[k]+partidos[k]   #de todos os circulos eleitorais
             
-    return tuple(l)
+    return tuple(partidos)
     
 
-        
+#Funcao Max Mandatos        
 def max_mandatos(votacoes):
     '''recebe um tuplo de tuplos dos resultados das votacoes em cada circulo
     eleitoral e devolve uma cadeia de caracteres com a sigla e desginacao do
     partido vencedor, o que teve maior numero de mandatos atribuidos.'''
     
-    PDR = "PDR\tPartido Democratico Republicano"
-    PCP = "PCP-PEV\tCDU - Coligacao Democratica Unitaria"
-    PPD = "PPD/PSD-CDS/PP\tPortugal a Frente"
-    MPT = "MPT\tPartido da Terra"
-    L = "L/TDA\tLIVRE/Tempo de Avancar"
-    PAN = "PAN\tPessoas-Animais-Natureza"
-    PTP = "PTP-MAS\tAgir"
-    JPP = "JPP\tJuntos pelo Povo"
-    PNR = "PNR\tPartido Nacional Renovador"
-    PPM = "PPM\tPartido Popular Monarquico"
-    NC = "NC\tNos, Cidadaos!"
-    PCTP = "PCTP/MRPP\tPartido Comunista dos Trabalhadores Portugueses"
-    PS = "PS\tPartido Socialista"
-    BE = "B.E.\tBloco de Esquerda"
-    PURP = "PURP\tPartido Unido dos Reformados e Pensionistas"
-    
     partidos = (PDR, PCP, PPD, MPT, L, PAN, PTP, JPP, PNR, PPM, NC, PCTP,\
                 PS, BE, PURP)                #tuplo com os partidos nas posicoes
                                              #aos quais pertencem
     resultado = list(assembleia (votacoes))  
+    
     i = resultado.index(max(resultado))      #posicao do vencedor
     n = max(resultado)
     
