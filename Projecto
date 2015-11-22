@@ -84,3 +84,5 @@ def max_mandatos(votacoes):
         return "Empate tecnico"              #mais de um vencedor
     
     return partidos[i]
+
+#==============================================================================#
